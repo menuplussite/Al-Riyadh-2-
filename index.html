@@ -190,6 +190,72 @@ html, body {
   box-shadow: 0 2px 8px rgba(244, 63, 94, 0.4), inset 0 -2px 0 rgba(0,0,0,0.15);
 }
 
+/* ==================== شريط البحث في المخزن ==================== */
+.product-search-wrap {
+  position: sticky;
+  top: -24px;
+  z-index: 20;
+  background: var(--surface);
+  padding: 24px 0 10px;
+  margin: -24px 0 8px;
+}
+.product-search-wrap input {
+  width: 100%;
+  padding: 14px 46px 14px 46px;
+  border: 2px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  background: #f1f5f9;
+  outline: none;
+  transition: 0.3s;
+  text-align: right;
+  color: var(--text-main);
+}
+.product-search-wrap input::placeholder { color: #94a3b8; font-weight: 700; }
+.product-search-wrap input:focus {
+  border-color: var(--primary);
+  background: #ffffff;
+  box-shadow: var(--shadow-glow);
+}
+.product-search-wrap .search-icon {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  font-size: 17px;
+  line-height: 1;
+  pointer-events: none;
+  opacity: 0.75;
+}
+.product-search-wrap .clear-search {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  background: #94a3b8;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+  padding: 0;
+  line-height: 1;
+}
+.product-search-wrap .clear-search.show { display: flex; }
+.product-search-wrap .clear-search:active {
+  background: var(--danger);
+  transform: translateY(-50%) scale(0.88);
+}
+
 /* ==================== جدول الفاتورة ==================== */
 .table-wrap {
   background: var(--surface); border-radius: var(--radius); overflow: hidden; 
@@ -259,13 +325,11 @@ table.app-table tbody tr.empty-row td { padding: 30px; color: var(--text-muted);
   box-shadow: 0 10px 30px rgba(0,0,0,0.15);
   max-height: 220px;
   overflow-y: auto;
-  z-index: 9999; /* لضمان الظهور فوق كل شيء */
+  z-index: 9999;
   display: none;
   flex-direction: column;
 }
-.custom-dropdown.show {
-  display: flex;
-}
+.custom-dropdown.show { display: flex; }
 .custom-dropdown-item {
   padding: 14px 16px;
   font-size: 15px;
@@ -276,20 +340,15 @@ table.app-table tbody tr.empty-row td { padding: 30px; color: var(--text-muted);
   transition: background 0.2s;
   text-align: right;
 }
-.custom-dropdown-item:last-child {
-  border-bottom: none;
-}
+.custom-dropdown-item:last-child { border-bottom: none; }
 .custom-dropdown-item:hover, .custom-dropdown-item:active {
   background: var(--primary-light);
   color: var(--primary-hover);
 }
-.input-wrapper {
-  position: relative;
-  width: 100%;
-}
+.input-wrapper { position: relative; width: 100%; }
 
 /* ============================================================
-   ================== FAB: الزر الواحد العائم الفخم =================
+   ================== FAB: الزر الواحد العائم =================
    ============================================================ */
 .fab-backdrop {
   position: fixed; inset: 0;
@@ -403,7 +462,6 @@ table.app-table tbody tr.empty-row td { padding: 30px; color: var(--text-muted);
   position: relative;
   overflow: hidden;
 }
-
 .fab-main::after {
   content: '';
   position: absolute;
@@ -414,20 +472,17 @@ table.app-table tbody tr.empty-row td { padding: 30px; color: var(--text-muted);
   pointer-events: none;
   transition: opacity 0.3s ease;
 }
-
 .fab-main:active {
   transform: scale(0.92);
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.4),
               inset 0 4px 8px rgba(0, 0, 0, 0.3);
 }
-
 .fab-wrap.open .fab-main {
   transform: rotate(45deg);
   background: linear-gradient(145deg, #9f1239, #e11d48, #fb7185);
   box-shadow: 0 12px 28px rgba(159, 18, 57, 0.4),
               inset 0 2px 6px rgba(255, 255, 255, 0.4);
 }
-
 .fab-main svg {
   width: 32px;
   height: 32px;
@@ -439,11 +494,9 @@ table.app-table tbody tr.empty-row td { padding: 30px; color: var(--text-muted);
   filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
   transition: transform 0.3s ease;
 }
-.fab-wrap.open .fab-main svg {
-  transform: rotate(-45deg);
-}
+.fab-wrap.open .fab-main svg { transform: rotate(-45deg); }
 
-/* ==================== النوافذ المنبثقة (Modals) ==================== */
+/* ==================== النوافذ المنبثقة ==================== */
 .modal {
   position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(6px);
   display: none; align-items: center; justify-content: center; z-index: 2000; padding: 16px;
@@ -629,7 +682,6 @@ body * { visibility: hidden !important; }
   <div class="entry-block">  
     <div class="eb-title">➕ إضافة صنف جديد</div>  
     
-    <!-- تعديل حقل البحث لإضافة القائمة المنسدلة المخصصة -->
     <div class="input-wrapper">
       <input id="entryName" class="entry-name" type="text" placeholder="اسم الصنف" autocomplete="off">  
       <div id="entryNameDropdown" class="custom-dropdown"></div>
@@ -678,7 +730,7 @@ body * { visibility: hidden !important; }
   </div>  
 </main>  
 
-<!-- ========== FAB: زر واحد يفتح كل الأزرار ========== -->
+<!-- ========== FAB ========== -->
 <div class="fab-backdrop" id="fabBackdrop"></div>
 
 <div class="fab-wrap" id="fabWrap">
@@ -718,7 +770,6 @@ body * { visibility: hidden !important; }
 
   </div>
 
-  <!-- الزر الفخم الجديد -->
   <button type="button" class="fab-main" id="fabMain" aria-label="فتح القائمة" aria-expanded="false">
     <svg viewBox="0 0 24 24">
       <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -800,14 +851,20 @@ body * { visibility: hidden !important; }
     <div class="modal-body">  
       <div style="display:flex; gap:10px; margin-bottom:12px;">
         <button type="button" id="importExcelBtn" class="excel-import-btn" style="flex:1; margin-bottom:0;">📊 استيراد </button>  
-        <button type="button" id="exportExcelBtn" class="excel-export-btn" style="flex:1; margin-bottom:0;">⬇️ تقرير إكسيل</button>  
+        <button type="button" id="exportExcelBtn" class="excel-export-btn" style="flex:1; margin-bottom:0;">⬇️ تقرير إكسيل</button>
       </div>
       <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" style="display:none">  
 
-      <!-- صف: زر إضافة منتج (flex:1) + زر حذف كل المنتجات (دائري على اليمين) -->
       <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px;">
         <button type="button" id="clearAllProductsBtn" class="clear-all-products-btn" title="حذف جميع المنتجات من المخزن">🗑️</button>
         <button type="button" id="addProductBtn" class="prod-add-btn" style="flex:1; margin-bottom:0;">➕ إضافة منتج جديد</button>  
+      </div>
+
+      <!-- ✅ شريط البحث الجديد -->
+      <div class="product-search-wrap">
+        <span class="search-icon">🔍</span>
+        <input id="productSearchInput" type="text" placeholder="ابحث عن منتج بالاسم..." autocomplete="off" aria-label="بحث في المخزن">
+        <button type="button" class="clear-search" id="clearProductSearch" aria-label="مسح البحث">✕</button>
       </div>
 
       <div id="productListContainer"></div>  
@@ -853,7 +910,6 @@ body * { visibility: hidden !important; }
     </div>
     <div class="modal-body">
       <label>اسم الصنف</label>
-      <!-- تعديل حقل البحث في البيع السريع أيضاً -->
       <div class="input-wrapper">
         <input id="qsName" type="text" placeholder="بحث عن صنف..." autocomplete="off">
         <div id="qsNameDropdown" class="custom-dropdown"></div>
@@ -952,6 +1008,7 @@ body * { visibility: hidden !important; }
   var invoiceNumberValue = '';  
   var fontsReady = false;  
   var entryPriceAuto = true;  
+  var productSearchQuery = ''; /* ✅ حالة البحث في المخزن */
   
   function $(id) { return document.getElementById(id); }  
   
@@ -1190,6 +1247,28 @@ body * { visibility: hidden !important; }
     }  
   }  
   
+  // ==================== دالة البحث الذكي وتجاهل الهمزات ====================
+  function normalizeArabic(str) {
+    if (!str) return '';
+    return str.trim()
+      .replace(/[أإآا]/g, 'ا')
+      .replace(/ة/g, 'ه')
+      .replace(/ى/g, 'ي')
+      .replace(/[\u064B-\u065F\u0670]/g, '')
+      .replace(/ـ/g, '')
+      .toLowerCase();
+  }
+
+  // ✅ إعادة ضبط البحث في المخزن
+  function resetProductSearch() {
+    productSearchQuery = '';
+    var si = $('productSearchInput');
+    if (si) si.value = '';
+    var cb = $('clearProductSearch');
+    if (cb) cb.classList.remove('show');
+  }
+
+  // ✅ عرض المنتجات مع فلترة البحث
   function renderProducts() {  
     var ps = loadProducts();  
     ps.sort(function (a, b) { return (a.name || '').localeCompare(b.name || '', 'ar'); });  
@@ -1199,23 +1278,38 @@ body * { visibility: hidden !important; }
       c.innerHTML = '<div class="empty-list">لا توجد منتجات في المخزن بعد<br>اضغط "إضافة منتج جديد" أو "استيراد من Excel" للبدء</div>';  
       return;  
     }  
+
+    var isSearching = productSearchQuery && productSearchQuery.trim();
+    var display = ps;
+    if (isSearching) {
+      var q = normalizeArabic(productSearchQuery);
+      display = ps.filter(function(p) { return normalizeArabic(p.name).indexOf(q) !== -1; });
+    }
+
+    if (!display.length) {
+      c.innerHTML = '<div class="empty-list">🔍<br>لا توجد نتائج مطابقة للبحث<br>جرّب كلمة أخرى أو امسح البحث</div>';
+      return;
+    }
       
-    var totalValue = 0, lowCount = 0;  
-    for (var k = 0; k < ps.length; k++) {  
-      var pp = ps[k];  
-      var upc = Number(pp.unitsPerCarton) || 1;  
-      var stockCartons = (Number(pp.stockPieces) || 0) / upc;  
-      totalValue += stockCartons * (Number(pp.buyCarton) || 0);  
-      if (stockCartons <= 0) lowCount++;  
+    var totalValue = 0;  
+    for (var k = 0; k < display.length; k++) {  
+      var pp = display[k];  
+      var upc0 = Number(pp.unitsPerCarton) || 1;  
+      var stockCartons0 = (Number(pp.stockPieces) || 0) / upc0;  
+      totalValue += stockCartons0 * (Number(pp.buyCarton) || 0);  
     }  
       
+    var countLabel = isSearching 
+      ? 'نتائج البحث: ' + display.length + ' من ' + ps.length 
+      : ps.length + ' منتج';
+
     var html = '<div class="inv-summary-bar">' +  
-      '<span>📦 ' + ps.length + ' منتج</span>' +  
+      '<span>📦 ' + countLabel + '</span>' +  
       '<span>قيمة المخزون: ' + fmt(totalValue) + '</span>' +  
     '</div>';  
   
-    for (var i = 0; i < ps.length; i++) {  
-      var p = ps[i];  
+    for (var i = 0; i < display.length; i++) {  
+      var p = display[i];  
       var upc = Number(p.unitsPerCarton) || 1;  
       var stockCartons = Math.round(((Number(p.stockPieces) || 0) / upc) * 100) / 100;  
         
@@ -1246,7 +1340,6 @@ body * { visibility: hidden !important; }
     c.innerHTML = html;  
   }  
   
-  // دالة فارغة للحفاظ على التوافق بعد إزالة datalist
   function refreshProductDatalist() { }  
   
   function openProductModal(product) {  
@@ -1322,6 +1415,7 @@ body * { visibility: hidden !important; }
       });  
     }  
     saveProducts(ps);  
+    resetProductSearch(); // ✅ إعادة ضبط البحث بعد الحفظ لرؤية النتيجة
     renderProducts();  
     refreshProductDatalist();  
     closeModal('productModal');  
@@ -1427,6 +1521,7 @@ body * { visibility: hidden !important; }
         }  
   
         saveProducts(ps);  
+        resetProductSearch(); // ✅ إعادة ضبط البحث لعرض كل النتائج
         renderProducts();  
         refreshProductDatalist();  
           
@@ -2555,7 +2650,7 @@ body * { visibility: hidden !important; }
     m.addEventListener('click', function (e) { if (e.target === m) closeModal(m.id); });  
   });  
 
-  // ========== FAB: فتح/إغلاق الزر الواحد ==========
+  // ========== FAB ==========
   var fabWrap = $('fabWrap');
   var fabBackdrop = $('fabBackdrop');
   var fabMain = $('fabMain');
@@ -2589,7 +2684,11 @@ body * { visibility: hidden !important; }
       if (act === 'pay') { recalc(); openModal('payModal'); }  
       else if (act === 'save') saveInvoice();  
       else if (act === 'saved') { renderSavedList(); openModal('savedModal'); }  
-      else if (act === 'inventory') { renderProducts(); openModal('inventoryModal'); }  
+      else if (act === 'inventory') { 
+        resetProductSearch(); // ✅ بداية نظيفة للبحث عند فتح المخزن
+        renderProducts(); 
+        openModal('inventoryModal'); 
+      }  
       else if (act === 'quick_sale') { renderQS(); openModal('quickSaleModal'); }
       else if (act === 'daily_report') { 
         var todayStr = new Date().toISOString().slice(0, 10);
@@ -2626,12 +2725,42 @@ body * { visibility: hidden !important; }
       function () {
         saveProducts([]);
         _productsCache = [];
+        resetProductSearch(); // ✅ مسح البحث لتفريغ القائمة
         renderProducts();
         refreshProductDatalist();
         toast('✓ تم حذف جميع المنتجات من المخزن');
       }
     );
   });
+
+  // ✅ مستمعات شريط البحث في المخزن
+  var productSearchInput = $('productSearchInput');
+  var clearProductSearchBtn = $('clearProductSearch');
+
+  if (productSearchInput) {
+    productSearchInput.addEventListener('input', function () {
+      productSearchQuery = this.value;
+      if (clearProductSearchBtn) {
+        clearProductSearchBtn.classList.toggle('show', !!this.value);
+      }
+      renderProducts();
+    });
+    // زر Enter يمسح لوحة المفاتيح
+    productSearchInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        resetProductSearch();
+        renderProducts();
+      }
+    });
+  }
+
+  if (clearProductSearchBtn) {
+    clearProductSearchBtn.addEventListener('click', function () {
+      resetProductSearch();
+      renderProducts();
+      if (productSearchInput) productSearchInput.focus();
+    });
+  }
   
   $('productListContainer').addEventListener('click', function (e) {  
     var btn = e.target.closest ? e.target.closest('[data-prod-act]') : null;  
@@ -2673,18 +2802,6 @@ body * { visibility: hidden !important; }
     } else { clearDraft(); return false; }  
   }  
 
-  // ==================== دالة البحث الذكي وتجاهل الهمزات ====================
-  function normalizeArabic(str) {
-    if (!str) return '';
-    return str.trim()
-      .replace(/[أإآا]/g, 'ا') // توحيد الألف
-      .replace(/ة/g, 'ه') // توحيد التاء المربوطة
-      .replace(/ى/g, 'ي') // توحيد الياء
-      .replace(/[\u064B-\u065F\u0670]/g, '') // إزالة التشكيل
-      .replace(/ـ/g, '') // إزالة التطويل
-      .toLowerCase();
-  }
-
   // دالة إعداد القائمة المنسدلة المخصصة
   function setupCustomAutocomplete(inputId, dropdownId) {
     var input = $(inputId);
@@ -2699,7 +2816,6 @@ body * { visibility: hidden !important; }
       }
 
       var ps = loadProducts();
-      // فلترة المنتجات باستخدام الدالة الذكية
       var matches = ps.filter(function(p) {
         return normalizeArabic(p.name).indexOf(query) !== -1;
       });
@@ -2720,20 +2836,17 @@ body * { visibility: hidden !important; }
     input.addEventListener('input', showDropdown);
     input.addEventListener('focus', showDropdown);
 
-    // إخفاء القائمة عند النقر خارجها
     document.addEventListener('click', function(e) {
       if (e.target !== input && !dropdown.contains(e.target)) {
         dropdown.classList.remove('show');
       }
     });
 
-    // عند اختيار منتج من القائمة
     dropdown.addEventListener('click', function(e) {
       if (e.target.classList.contains('custom-dropdown-item')) {
         input.value = e.target.getAttribute('data-name');
         dropdown.classList.remove('show');
         
-        // تحديث السعر والتنبيهات بناءً على الحقل
         if (inputId === 'entryName') {
           refreshEntryHint();
           autoFillPrice();
@@ -2750,7 +2863,6 @@ body * { visibility: hidden !important; }
     refreshProductDatalist();  
     renderProducts();  
     
-    // تفعيل البحث الذكي
     setupCustomAutocomplete('entryName', 'entryNameDropdown');
     setupCustomAutocomplete('qsName', 'qsNameDropdown');
 
