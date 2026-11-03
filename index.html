@@ -247,6 +247,47 @@ table.app-table tbody tr.empty-row td { padding: 30px; color: var(--text-muted);
 .profit-row { background: #eff6ff; border: 2px dashed #93c5fd; color: var(--text-main); }
 .profit-row #profitDisplay { font-size: 22px; direction: ltr; color: var(--primary); }
 
+/* ==================== القائمة المنسدلة المخصصة للبحث ==================== */
+.custom-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 2px solid var(--primary);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 9999; /* لضمان الظهور فوق كل شيء */
+  display: none;
+  flex-direction: column;
+}
+.custom-dropdown.show {
+  display: flex;
+}
+.custom-dropdown-item {
+  padding: 14px 16px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.2s;
+  text-align: right;
+}
+.custom-dropdown-item:last-child {
+  border-bottom: none;
+}
+.custom-dropdown-item:hover, .custom-dropdown-item:active {
+  background: var(--primary-light);
+  color: var(--primary-hover);
+}
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
 /* ============================================================
    ================== FAB: الزر الواحد العائم الفخم =================
    ============================================================ */
@@ -263,11 +304,11 @@ table.app-table tbody tr.empty-row td { padding: 30px; color: var(--text-muted);
 .fab-wrap {
   position: fixed; 
   bottom: 30px; 
-  left: 24px; /* تم النقل لليسار */
+  left: 24px;
   right: auto;
   z-index: 1000;
   display: flex; flex-direction: column;
-  align-items: flex-start; /* محاذاة الزر لليسار */
+  align-items: flex-start;
   gap: 16px;
   width: calc(100% - 48px); max-width: 460px;
   pointer-events: none;
@@ -285,7 +326,7 @@ table.app-table tbody tr.empty-row td { padding: 30px; color: var(--text-muted);
   display: flex; flex-direction: column; gap: 14px;
   opacity: 0;
   transform: translateY(20px) scale(0.95);
-  transform-origin: bottom left; /* الفتح يبدأ من أسفل اليسار */
+  transform-origin: bottom left;
   pointer-events: none;
   transition: opacity .3s ease, transform .4s cubic-bezier(.34, 1.56, .64, 1);
 }
@@ -346,17 +387,14 @@ table.app-table tbody tr.empty-row td { padding: 30px; color: var(--text-muted);
   box-shadow: 0 2px 4px rgba(244, 63, 94, 0.4);
 }
 
-/* الزرار الرئيسي الفخم */
 .fab-main {
   width: 68px; height: 68px;
   border-radius: 50%;
   border: none;
-  /* تدرج ملكي فخم */
   background: linear-gradient(145deg, #0f172a, #1e3a8a, #3b82f6);
   color: #fff;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
-  /* ظلال متعددة لعمق وفخامة */
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.4),
               0 4px 12px rgba(59, 130, 246, 0.3),
               inset 0 2px 6px rgba(255, 255, 255, 0.4);
@@ -366,7 +404,6 @@ table.app-table tbody tr.empty-row td { padding: 30px; color: var(--text-muted);
   overflow: hidden;
 }
 
-/* لمعة زجاجية علوية */
 .fab-main::after {
   content: '';
   position: absolute;
@@ -386,7 +423,6 @@ table.app-table tbody tr.empty-row td { padding: 30px; color: var(--text-muted);
 
 .fab-wrap.open .fab-main {
   transform: rotate(45deg);
-  /* لون قرمزي ملكي عند الفتح */
   background: linear-gradient(145deg, #9f1239, #e11d48, #fb7185);
   box-shadow: 0 12px 28px rgba(159, 18, 57, 0.4),
               inset 0 2px 6px rgba(255, 255, 255, 0.4);
@@ -592,8 +628,13 @@ body * { visibility: hidden !important; }
 
   <div class="entry-block">  
     <div class="eb-title">➕ إضافة صنف جديد</div>  
-    <input id="entryName" class="entry-name" type="text" placeholder="اسم الصنف" autocomplete="off" list="productList">  
-    <datalist id="productList"></datalist>  
+    
+    <!-- تعديل حقل البحث لإضافة القائمة المنسدلة المخصصة -->
+    <div class="input-wrapper">
+      <input id="entryName" class="entry-name" type="text" placeholder="اسم الصنف" autocomplete="off">  
+      <div id="entryNameDropdown" class="custom-dropdown"></div>
+    </div>
+
     <div class="entry-row">  
       <input id="entryQty" type="number" inputmode="decimal" step="any" placeholder="الكمية">  
       <select id="entryUnit">  
@@ -812,7 +853,11 @@ body * { visibility: hidden !important; }
     </div>
     <div class="modal-body">
       <label>اسم الصنف</label>
-      <input id="qsName" type="text" list="productList" placeholder="بحث عن صنف..." autocomplete="off">
+      <!-- تعديل حقل البحث في البيع السريع أيضاً -->
+      <div class="input-wrapper">
+        <input id="qsName" type="text" placeholder="بحث عن صنف..." autocomplete="off">
+        <div id="qsNameDropdown" class="custom-dropdown"></div>
+      </div>
       <div class="entry-row">
         <input id="qsQty" type="number" inputmode="decimal" step="any" placeholder="الكمية">
         <select id="qsUnit">
@@ -1201,16 +1246,8 @@ body * { visibility: hidden !important; }
     c.innerHTML = html;  
   }  
   
-  function refreshProductDatalist() {  
-    var ps = loadProducts();  
-    var dl = $('productList');  
-    if (!dl) return;  
-    var html = '';  
-    for (var i = 0; i < ps.length; i++) {  
-      html += '<option value="' + escapeHtml(ps[i].name) + '"></option>';  
-    }  
-    dl.innerHTML = html;  
-  }  
+  // دالة فارغة للحفاظ على التوافق بعد إزالة datalist
+  function refreshProductDatalist() { }  
   
   function openProductModal(product) {  
     $('prodId').value = product ? product.id : '';  
@@ -2635,11 +2672,88 @@ body * { visibility: hidden !important; }
       loadDraft(); toast('تم استرجاع المسودة'); return true;  
     } else { clearDraft(); return false; }  
   }  
-  
+
+  // ==================== دالة البحث الذكي وتجاهل الهمزات ====================
+  function normalizeArabic(str) {
+    if (!str) return '';
+    return str.trim()
+      .replace(/[أإآا]/g, 'ا') // توحيد الألف
+      .replace(/ة/g, 'ه') // توحيد التاء المربوطة
+      .replace(/ى/g, 'ي') // توحيد الياء
+      .replace(/[\u064B-\u065F\u0670]/g, '') // إزالة التشكيل
+      .replace(/ـ/g, '') // إزالة التطويل
+      .toLowerCase();
+  }
+
+  // دالة إعداد القائمة المنسدلة المخصصة
+  function setupCustomAutocomplete(inputId, dropdownId) {
+    var input = $(inputId);
+    var dropdown = $(dropdownId);
+    if (!input || !dropdown) return;
+
+    function showDropdown() {
+      var query = normalizeArabic(input.value);
+      if (!query) {
+        dropdown.classList.remove('show');
+        return;
+      }
+
+      var ps = loadProducts();
+      // فلترة المنتجات باستخدام الدالة الذكية
+      var matches = ps.filter(function(p) {
+        return normalizeArabic(p.name).indexOf(query) !== -1;
+      });
+
+      if (!matches.length) {
+        dropdown.classList.remove('show');
+        return;
+      }
+
+      var html = '';
+      for (var i = 0; i < matches.length; i++) {
+        html += '<div class="custom-dropdown-item" data-name="' + escapeHtml(matches[i].name) + '">' + escapeHtml(matches[i].name) + '</div>';
+      }
+      dropdown.innerHTML = html;
+      dropdown.classList.add('show');
+    }
+
+    input.addEventListener('input', showDropdown);
+    input.addEventListener('focus', showDropdown);
+
+    // إخفاء القائمة عند النقر خارجها
+    document.addEventListener('click', function(e) {
+      if (e.target !== input && !dropdown.contains(e.target)) {
+        dropdown.classList.remove('show');
+      }
+    });
+
+    // عند اختيار منتج من القائمة
+    dropdown.addEventListener('click', function(e) {
+      if (e.target.classList.contains('custom-dropdown-item')) {
+        input.value = e.target.getAttribute('data-name');
+        dropdown.classList.remove('show');
+        
+        // تحديث السعر والتنبيهات بناءً على الحقل
+        if (inputId === 'entryName') {
+          refreshEntryHint();
+          autoFillPrice();
+          input.focus();
+        } else if (inputId === 'qsName') {
+          $('qsQty').focus();
+        }
+      }
+    });
+  }
+
   function init() {  
     waitForFonts();  
     refreshProductDatalist();  
     renderProducts();  
+    
+    // تفعيل البحث الذكي
+    setupCustomAutocomplete('entryName', 'entryNameDropdown');
+    setupCustomAutocomplete('qsName', 'qsNameDropdown');
+
     var restored = checkDraftOnLoad();  
     if (!restored) newInvoice(false);  
     renderSavedList();  
