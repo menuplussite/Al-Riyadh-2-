@@ -1,19 +1,19 @@
-<!DOCTYPE html>  <html lang="ar" dir="rtl">  
-<head>  
-<meta charset="UTF-8">  
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
-<meta name="theme-color" content="#1e1b4b">  
-<title>الرياض للتجارة والتوزيع</title>  
-<link rel="preconnect" href="https://fonts.googleapis.com">  
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>  
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">  
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>  
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>  
-<!-- مكتبة SheetJS لقراءة ملفات الإكسيل -->  
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>  
-<style>  
-/* ==================== المتغيرات والألوان ==================== */  
-:root {  
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1e1b4b">
+<title>الرياض للتجارة والتوزيع</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+/* ==================== المتغيرات والألوان ==================== */
+:root {
   --primary: #3b82f6; 
   --primary-hover: #2563eb;  
   --primary-light: #eff6ff;  
@@ -39,7 +39,7 @@ html, body {
   background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
   font-family: 'Cairo', 'Segoe UI', Tahoma, Arial, sans-serif;
   color: var(--text-main); direction: rtl; overflow-x: hidden;
-  padding-bottom: 260px; /* تم زيادة المساحة السفلية لعدم إعاقة الشريط الجديد */
+  padding-bottom: 110px;
   min-height: 100vh;
 }
 
@@ -216,35 +216,119 @@ table.app-table tbody tr.empty-row td { padding: 30px; color: var(--text-muted);
 .profit-row { background: #eff6ff; border: 2px dashed #93c5fd; color: var(--text-main); }
 .profit-row #profitDisplay { font-size: 22px; direction: ltr; color: var(--primary); }
 
-/* ==================== الشريط السفلي العائم (التصميم الجديد 4x2 الأيقونات) ==================== */
-.bottom-bar {
-  position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.8); border-radius: 32px;
-  padding: 16px; display: flex; flex-direction: column; gap: 14px;
-  z-index: 1000; box-shadow: 0 15px 40px rgba(15, 23, 42, 0.15); width: calc(100% - 20px); max-width: 500px;
+/* ============================================================
+   ================== FAB: الزر الواحد العائم =================
+   ============================================================ */
+.fab-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s ease;
+  z-index: 998;
 }
-.pay-btn {
-  background: linear-gradient(135deg, var(--primary), #6366f1); color: #fff; border: none; border-radius: 20px;
-  padding: 14px; font-size: 17px; font-weight: 800; font-family: inherit; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 6px 15px rgba(99, 102, 241, 0.3); transition: all 0.3s; width: 100%;
+.fab-backdrop.show { opacity: 1; pointer-events: auto; }
+
+.fab-wrap {
+  position: fixed; bottom: 20px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 14px;
+  width: calc(100% - 28px); max-width: 460px;
+  pointer-events: none;
 }
-.pay-btn:active { transform: scale(0.97); box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2); }
-.pay-btn .dollar { color: #c7d2fe; font-size: 20px; font-weight: 900; }
-.icon-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
-.icon-bar button {
-  background: #ffffff; border: 1px solid #e2e8f0; font-size: 22px; padding: 12px 0; cursor: pointer;
-  border-radius: 18px; position: relative; transition: 0.3s;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+.fab-wrap > * { pointer-events: auto; }
+
+.fab-actions {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 26px;
+  padding: 16px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+  display: flex; flex-direction: column; gap: 12px;
+  opacity: 0;
+  transform: translateY(24px) scale(0.92);
+  transform-origin: bottom center;
+  pointer-events: none;
+  transition: opacity .25s ease, transform .3s cubic-bezier(.34, 1.56, .64, 1);
 }
-.icon-bar button span.lbl { font-size: 11px; color: var(--text-muted); font-weight: 800; }
-.icon-bar button:hover { background: #f8fafc; transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.05); }
-.icon-bar button:active { transform: scale(0.95); }
-.icon-bar button .badge-count {
-  position: absolute; top: -5px; right: -5px; background: var(--danger); color: #fff;
-  font-size: 11px; font-weight: 800; min-width: 20px; height: 20px; line-height: 18px;
-  border-radius: 10px; padding: 0 4px; text-align: center; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(244,63,94,0.4);
+.fab-wrap.open .fab-actions {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.fab-pay-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: #fff;
+  border: none; border-radius: 16px;
+  padding: 15px;
+  font-size: 16px; font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+.fab-pay-btn:active { transform: scale(0.97); box-shadow: 0 2px 8px rgba(99,102,241,0.3); }
+
+.fab-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.fab-grid button {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 10px 4px;
+  font-family: inherit;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+  position: relative;
+  transition: transform .15s ease, background .2s ease;
+  color: var(--text-main);
+}
+.fab-grid button span.lbl {
+  font-size: 11px; color: var(--text-muted); font-weight: 800;
+  white-space: nowrap;
+}
+.fab-grid button:active { transform: scale(0.93); background: #e2e8f0; }
+
+.fab-grid button .badge-count {
+  position: absolute; top: -5px; right: -5px;
+  background: var(--danger); color: #fff;
+  font-size: 10px; font-weight: 800;
+  min-width: 18px; height: 18px; line-height: 14px;
+  border-radius: 9px; padding: 0 4px;
+  text-align: center;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(244, 63, 94, 0.4);
+}
+
+.fab-main {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: #fff;
+  font-size: 32px; font-weight: 900; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.5);
+  transition: transform .32s cubic-bezier(.34, 1.56, .64, 1), box-shadow .2s ease;
+  flex-shrink: 0;
+}
+.fab-main:active { transform: scale(0.92); }
+.fab-wrap.open .fab-main {
+  transform: rotate(45deg);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.4);
 }
 
 /* ==================== النوافذ المنبثقة (Modals) ==================== */
@@ -378,7 +462,7 @@ border: 2px solid #000; border-radius: 0; padding: 0; margin: 0; font-variant-nu
 .invoice-holder { position: fixed; right: -9999px; top: 0; width: 384px; z-index: -1; pointer-events: none; }
 
 .toast {
-position: fixed; bottom: 220px; left: 50%; transform: translateX(-50%) translateY(20px);
+position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%) translateY(20px);
 background: #0f172a; color: #fff; padding: 14px 28px; border-radius: 30px; font-size: 15px; font-weight: 800;
 z-index: 9999; opacity: 0; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); pointer-events: none; box-shadow: var(--shadow-lg);
 }
@@ -477,21 +561,48 @@ body * { visibility: hidden !important; }
   </div>  
 </main>  
 
-<!-- الشريط السفلي الجديد: تصميم أيقونات التطبيقات 4x2 -->
-<div class="bottom-bar">  
-  <button type="button" class="pay-btn" id="payBtn"><span class="dollar">$</span> حفظ ودفع الفاتورة</button>  
-  <div class="icon-grid icon-bar">  
-    <button type="button" data-act="save" title="حفظ الفاتورة"><span>💾</span><span class="lbl">حفظ</span></button>  
-    <button type="button" data-act="saved" title="سجل الفواتير"><span>📂</span><span class="lbl">الفواتير</span></button>  
-    <button type="button" data-act="inventory" title="المخزن"><span>🏪</span><span class="lbl">المخزن</span></button>  
-    <button type="button" data-act="quick_sale" title="بيع سريع بدون فاتورة"><span>⚡</span><span class="lbl">بيع سريع</span></button>
-    
-    <button type="button" data-act="daily_report" title="تقرير الربح اليومي"><span>📈</span><span class="lbl">اليومية</span></button>
-    <button type="button" data-act="print" title="طباعة"><span>🖨️</span><span class="lbl">طباعة</span></button>  
-    <button type="button" data-act="share" title="مشاركة الفاتورة"><span>📤</span><span class="lbl">مشاركة</span></button>  
-    <button type="button" data-act="preview" title="معاينة"><span>🧾</span><span class="lbl">معاينة</span></button>
-  </div>  
-</div>  
+<!-- ========== FAB: زر واحد يفتح كل الأزرار ========== -->
+<div class="fab-backdrop" id="fabBackdrop"></div>
+
+<div class="fab-wrap" id="fabWrap">
+  <div class="fab-actions" id="fabActions">
+
+    <button type="button" class="fab-pay-btn" id="payBtn" data-act="pay">
+      <span class="dollar">💵</span>
+      <span>حفظ ودفع الفاتورة</span>
+    </button>
+
+    <div class="fab-grid">
+      <button type="button" data-act="save" title="حفظ الفاتورة">
+        <span>💾</span><span class="lbl">حفظ</span>
+      </button>
+      <button type="button" data-act="saved" title="سجل الفواتير">
+        <span>📂</span><span class="lbl">الفواتير</span>
+      </button>
+      <button type="button" data-act="inventory" title="المخزن">
+        <span>🏪</span><span class="lbl">المخزن</span>
+      </button>
+      <button type="button" data-act="quick_sale" title="بيع سريع">
+        <span>⚡</span><span class="lbl">بيع سريع</span>
+      </button>
+      <button type="button" data-act="daily_report" title="التقرير اليومي">
+        <span>📈</span><span class="lbl">اليومية</span>
+      </button>
+      <button type="button" data-act="print" title="طباعة">
+        <span>🖨️</span><span class="lbl">طباعة</span>
+      </button>
+      <button type="button" data-act="share" title="مشاركة">
+        <span>📤</span><span class="lbl">مشاركة</span>
+      </button>
+      <button type="button" data-act="preview" title="معاينة">
+        <span>🧾</span><span class="lbl">معاينة</span>
+      </button>
+    </div>
+
+  </div>
+
+  <button type="button" class="fab-main" id="fabMain" aria-label="فتح القائمة" aria-expanded="false">＋</button>
+</div>
 
 <!-- نوافذ التطبيق -->
 <div class="modal" id="payModal">  
@@ -605,7 +716,6 @@ body * { visibility: hidden !important; }
   </div>  
 </div>  
 
-<!-- نافذة البيع السريع بدون فاتورة -->
 <div class="modal" id="quickSaleModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -642,7 +752,6 @@ body * { visibility: hidden !important; }
   </div>
 </div>
 
-<!-- النافذة الجديدة: تقرير اليومية -->
 <div class="modal" id="dailyReportModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -675,7 +784,8 @@ body * { visibility: hidden !important; }
 
 <div class="invoice-holder">  
   <div id="invoice" class="invoice-doc"></div>  
-</div>  <div class="toast" id="toast"></div>  
+</div>
+<div class="toast" id="toast"></div>  
 
 <script>  
 (function () {  
@@ -846,7 +956,7 @@ body * { visibility: hidden !important; }
     upc = Number(upc) || 1;  
     if (unit === 'carton') return upc;  
     if (unit === 'half') return upc / 2;  
-    return 1; // للعلبة واللفة
+    return 1;
   }  
   
   function unitLabelShort(unit) {  
@@ -920,7 +1030,6 @@ body * { visibility: hidden !important; }
     return { pieces: pieces, cost: cost, revenue: revenue, profit: revenue - cost };  
   }  
   
-  // دالة تحديث المخزون
   function adjustStock(recordItems, sign) {  
     if (!recordItems || !recordItems.length) return;  
     var ps = loadProducts();  
@@ -948,7 +1057,6 @@ body * { visibility: hidden !important; }
     }  
   }  
   
-  // ==================== عرض المنتجات ====================  
   function renderProducts() {  
     var ps = loadProducts();  
     ps.sort(function (a, b) { return (a.name || '').localeCompare(b.name || '', 'ar'); });  
@@ -1016,7 +1124,6 @@ body * { visibility: hidden !important; }
     dl.innerHTML = html;  
   }  
   
-  // ==================== إضافة/تعديل منتج ====================  
   function openProductModal(product) {  
     $('prodId').value = product ? product.id : '';  
     $('productModalTitle').textContent = product ? '✏️ تعديل منتج' : '➕ منتج جديد';  
@@ -1096,7 +1203,6 @@ body * { visibility: hidden !important; }
     toast('✓ تم حفظ المنتج');  
   }  
   
-  // ==================== استيراد Excel ====================  
   $('importExcelBtn').addEventListener('click', function () { $('excelFile').click(); });  
   
   $('excelFile').addEventListener('change', function (e) {  
@@ -1209,7 +1315,6 @@ body * { visibility: hidden !important; }
     e.target.value = '';  
   });  
 
-  // ==================== تصدير تقرير المخزن (Excel) ====================
   $('exportExcelBtn').addEventListener('click', function () {
     var ps = loadProducts();
     if (!ps || !ps.length) { toast('المخزن فارغ لا يوجد بيانات لتصديرها'); return; }
@@ -1257,7 +1362,6 @@ body * { visibility: hidden !important; }
     toast('✓ تم تنزيل تقرير المخزن بنجاح');
   });
   
-  // ==================== البيع السريع (بدون فاتورة) ====================
   function loadQS() { return loadJSON(LS.quick_sales, []); }
   function saveQS(arr) { saveJSON(LS.quick_sales, arr); }
 
@@ -1295,7 +1399,6 @@ body * { visibility: hidden !important; }
      var pPrice = 0;
      var pCost = 0;
      
-     // لو المنتج جديد وغير مسجل في المخزن
      if(!prod) {
        prod = {
          id: 'p_' + Date.now(), name: nm, buyCarton: 0, sellCarton: 0, unitsPerCarton: upc, stockPieces: 0, createdAt: Date.now()
@@ -1371,7 +1474,6 @@ body * { visibility: hidden !important; }
     }
   });
 
-  // ==================== التقرير اليومي (الربح والمبيعات) ====================
   function calculateDailyReport(dateStr) {
     var allInvoices = loadJSON(LS.invoices, []);
     var allQS = loadJSON(LS.quick_sales, []);
@@ -1448,7 +1550,6 @@ body * { visibility: hidden !important; }
     toast('✓ تم تنزيل تقرير اليومية بنجاح');
   });
 
-  // ==================== الجدول ====================  
   var itemsBody = $('itemsBody');  
   
   function renderTable() {  
@@ -2328,13 +2429,40 @@ body * { visibility: hidden !important; }
   document.querySelectorAll('.modal').forEach(function (m) {  
     m.addEventListener('click', function (e) { if (e.target === m) closeModal(m.id); });  
   });  
-  
-  $('payBtn').addEventListener('click', function () { recalc(); openModal('payModal'); });  
-  
-  document.querySelectorAll('.icon-bar [data-act]').forEach(function (btn) {  
+
+  // ========== FAB: فتح/إغلاق الزر الواحد ==========
+  var fabWrap = $('fabWrap');
+  var fabBackdrop = $('fabBackdrop');
+  var fabMain = $('fabMain');
+
+  function openFab() {
+    fabWrap.classList.add('open');
+    fabBackdrop.classList.add('show');
+    fabMain.setAttribute('aria-expanded', 'true');
+  }
+  function closeFab() {
+    fabWrap.classList.remove('open');
+    fabBackdrop.classList.remove('show');
+    fabMain.setAttribute('aria-expanded', 'false');
+  }
+  function toggleFab() {
+    if (fabWrap.classList.contains('open')) closeFab(); else openFab();
+  }
+
+  fabMain.addEventListener('click', toggleFab);
+  fabBackdrop.addEventListener('click', closeFab);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && fabWrap.classList.contains('open')) closeFab();
+  });
+
+  // ربط كل أزرار FAB بالوظائف
+  document.querySelectorAll('.fab-wrap [data-act]').forEach(function (btn) {  
     btn.addEventListener('click', function () {  
       var act = this.dataset.act;  
-      if (act === 'save') saveInvoice();  
+      closeFab();
+
+      if (act === 'pay') { recalc(); openModal('payModal'); }  
+      else if (act === 'save') saveInvoice();  
       else if (act === 'saved') { renderSavedList(); openModal('savedModal'); }  
       else if (act === 'inventory') { renderProducts(); openModal('inventoryModal'); }  
       else if (act === 'quick_sale') { renderQS(); openModal('quickSaleModal'); }
