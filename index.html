@@ -159,6 +159,37 @@ html, body {
   transform: translateY(1px); box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3); 
 }
 
+/* ==================== زر حذف كل المنتجات - دائري احترافي ==================== */
+.clear-all-products-btn {
+  width: 56px; height: 56px; flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f43f5e, #e11d48);
+  color: #fff;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 18px rgba(244, 63, 94, 0.45), inset 0 -2px 0 rgba(0,0,0,0.15);
+  transition: transform .2s cubic-bezier(.34, 1.56, .64, 1), box-shadow .2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.clear-all-products-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.25), transparent);
+  border-radius: 50% 50% 0 0;
+  pointer-events: none;
+}
+.clear-all-products-btn:hover {
+  box-shadow: 0 8px 24px rgba(244, 63, 94, 0.55), inset 0 -2px 0 rgba(0,0,0,0.15);
+}
+.clear-all-products-btn:active {
+  transform: scale(0.9);
+  box-shadow: 0 2px 8px rgba(244, 63, 94, 0.4), inset 0 -2px 0 rgba(0,0,0,0.15);
+}
+
 /* ==================== جدول الفاتورة ==================== */
 .table-wrap {
   background: var(--surface); border-radius: var(--radius); overflow: hidden; 
@@ -680,7 +711,13 @@ body * { visibility: hidden !important; }
         <button type="button" id="exportExcelBtn" class="excel-export-btn" style="flex:1; margin-bottom:0;">⬇️ تقرير إكسيل</button>  
       </div>
       <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" style="display:none">  
-      <button type="button" id="addProductBtn" class="prod-add-btn">➕ إضافة منتج جديد</button>  
+
+      <!-- صف: زر إضافة منتج (flex:1) + زر حذف كل المنتجات (دائري على اليمين) -->
+      <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px;">
+        <button type="button" id="clearAllProductsBtn" class="clear-all-products-btn" title="حذف جميع المنتجات من المخزن">🗑️</button>
+        <button type="button" id="addProductBtn" class="prod-add-btn" style="flex:1; margin-bottom:0;">➕ إضافة منتج جديد</button>  
+      </div>
+
       <div id="productListContainer"></div>  
     </div>  
   </div>  
@@ -2489,6 +2526,24 @@ body * { visibility: hidden !important; }
   ['prodBuyCarton', 'prodSellCarton', 'prodUnitsPerCarton', 'prodStockCartons'].forEach(function (id) {  
     $(id).addEventListener('input', updateProdPreview);  
   });  
+
+  // ====== زر حذف جميع المنتجات من المخزن ======
+  $('clearAllProductsBtn').addEventListener('click', function () {
+    var ps = loadProducts();
+    if (!ps.length) { toast('المخزن فارغ بالفعل'); return; }
+    confirmBox(
+      'حذف كل المنتجات',
+      'سيتم حذف جميع المنتجات (' + ps.length + ' منتج) من المخزن نهائيًا.\n\n' +
+      'ملاحظة: الفواتير المحفوظة لن تتأثر.\n\nهل أنت متأكد؟',
+      function () {
+        saveProducts([]);
+        _productsCache = [];
+        renderProducts();
+        refreshProductDatalist();
+        toast('✓ تم حذف جميع المنتجات من المخزن');
+      }
+    );
+  });
   
   $('productListContainer').addEventListener('click', function (e) {  
     var btn = e.target.closest ? e.target.closest('[data-prod-act]') : null;  
