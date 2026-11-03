@@ -1196,9 +1196,28 @@ body * { visibility: hidden !important; }
       profit: m.profit  
     };  
   }  
-  
+
+  // ✅ تم إصلاح هذه الدالة لتحديث الأرباح ديناميكياً بناءً على أسعار المخزن الحالية
   function computeItemMetrics(it) {  
     if (!it) return { pieces: 0, cost: 0, revenue: 0, profit: 0 };  
+    
+    var unit = it.unit || 'piece';  
+    var qty = Number(it.qty) || 0;  
+    var price = Number(it.price) || 0;  
+    var prod = it.productId ? findProductById(it.productId) : findProductByName(it.name);  
+    
+    // إذا كان المنتج موجوداً في المخزن، نحسب التكلفة بناءً على أحدث سعر شراء
+    if (prod) {
+      var upc = Number(prod.unitsPerCarton) || 1;  
+      var mult = unitMult(unit, upc);  
+      var pieces = qty * mult;  
+      var buyP = buyPerPieceOf(prod);  
+      var cost = pieces * buyP;  
+      var revenue = qty * price;  
+      return { pieces: pieces, cost: cost, revenue: revenue, profit: revenue - cost };  
+    }
+
+    // إذا لم يوجد المنتج (تم حذفه من المخزن)، نستخدم القيم المحفوظة مسبقاً كحل أخير
     if (it.pieces !== undefined && it.cost !== undefined && it.revenue !== undefined) {  
       return {  
         pieces: Number(it.pieces) || 0,  
@@ -1207,17 +1226,13 @@ body * { visibility: hidden !important; }
         profit: Number(it.profit) || 0  
       };  
     }  
-    var unit = it.unit || 'piece';  
-    var qty = Number(it.qty) || 0;  
-    var price = Number(it.price) || 0;  
-    var prod = it.productId ? findProductById(it.productId) : findProductByName(it.name);  
-    var upc = prod ? (Number(prod.unitsPerCarton) || 1) : 1;  
-    var mult = unitMult(unit, upc);  
-    var pieces = qty * mult;  
-    var buyP = prod ? buyPerPieceOf(prod) : 0;  
-    var cost = pieces * buyP;  
-    var revenue = qty * price;  
-    return { pieces: pieces, cost: cost, revenue: revenue, profit: revenue - cost };  
+
+    // حالة افتراضية لمنتج غير موجود بالمخزن وليس له تكلفة محفوظة
+    var upcFallback = 1;  
+    var multFallback = unitMult(unit, upcFallback);  
+    var piecesFallback = qty * multFallback;  
+    var revenueFallback = qty * price;  
+    return { pieces: piecesFallback, cost: 0, revenue: revenueFallback, profit: revenueFallback };  
   }  
   
   function adjustStock(recordItems, sign) {  
